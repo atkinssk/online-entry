@@ -12,6 +12,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
@@ -24,6 +26,8 @@ import com.vaadin.ui.VerticalLayout;
 @Widgetset("uk.org.windswept.MyAppWidgetset")
 public class MyUI extends UI {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyUI.class);
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
@@ -33,6 +37,7 @@ public class MyUI extends UI {
 
         Button button = new Button("Click Me");
         button.addClickListener( e -> {
+            LOGGER.info("Click me {}", name.getValue());
             layout.addComponent(new Label("Thanks " + name.getValue() 
                     + ", it works!"));
         });
