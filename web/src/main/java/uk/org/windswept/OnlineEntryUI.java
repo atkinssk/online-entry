@@ -3,16 +3,14 @@ package uk.org.windswept;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import org.slf4j.Logger;
@@ -44,7 +42,7 @@ public class OnlineEntryUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         for (DisplayField field : fields)
         {
-            Component component = field.createComponent();
+            Component component = field.getField();
             layout.addComponent(component);
         }
         layout.setMargin(true);
@@ -59,19 +57,46 @@ public class OnlineEntryUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         final TabSheet tabsheet = new TabSheet();
 
-        tabsheet.addTab(buildLayout(boatDetailsFields()), "Boat Details");
-        tabsheet.addTab(buildLayout(personFields()), "Helm/Crew");
+        final List<DisplayField> boatDetailsFields = boatDetailsFields();
+        final List<DisplayField> personFields = personFields();
+
+        tabsheet.addTab(buildLayout(boatDetailsFields), "Boat Details");
+        tabsheet.addTab(buildLayout(personFields), "Helm/Crew");
+
+        FieldGroup binder = new FieldGroup();
+        bindAllFields(binder, boatDetailsFields);
+        bindAllFields(binder, personFields);
 
         layout.addComponent(tabsheet);
 
         Button button = new Button("Submit", e -> {
             LOGGER.info("Details updated");
             Notification.show("Details updated");
+            logFieldValues(boatDetailsFields);
+            logFieldValues(personFields);
         });
 
         layout.addComponent(button);
 
         setContent(layout);
+    }
+
+    private void logFieldValues(List<DisplayField> fields)
+    {
+        for (DisplayField field : fields)
+        {
+            LOGGER.info("{}:{}", field.getName(), field.getField().getValue());
+        }
+
+    }
+
+    private void bindAllFields(FieldGroup binder, List<DisplayField> fields)
+    {
+        for (DisplayField field : fields)
+        {
+            binder.bind(field.getField(), field.getName());
+        }
+
     }
 
     private List<DisplayField> boatDetailsFields()
@@ -91,7 +116,7 @@ public class OnlineEntryUI extends UI {
         (
                 new DisplayField("name","Name", DisplayFieldType.TEXT),
                 new DisplayField("address","Address", DisplayFieldType.TEXT_AREA),
-                new DisplayField("email","Email", DisplayFieldType.EMAIL),
+                new DisplayField("email","Email Address", DisplayFieldType.EMAIL),
                 new DisplayField("dob","Date of Birth", DisplayFieldType.DATE)
         );
     }

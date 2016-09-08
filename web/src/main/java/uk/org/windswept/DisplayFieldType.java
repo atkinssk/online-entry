@@ -4,6 +4,7 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
@@ -15,7 +16,7 @@ public enum DisplayFieldType
     TEXT
             {
                 @Override
-                public Component component(String name, String caption)
+                public Field field(String name, String caption)
                 {
                     return new TextField(caption);
                 }
@@ -23,7 +24,7 @@ public enum DisplayFieldType
     DATE
             {
                 @Override
-                public Component component(String name, String caption)
+                public Field field(String name, String caption)
                 {
                     return new DateField(caption);
                 }
@@ -31,7 +32,7 @@ public enum DisplayFieldType
     NUMBER
             {
                 @Override
-                public Component component(String name, String caption)
+                public Field field(String name, String caption)
                 {
                     final TextField field = new TextField(caption);
                     field.addValidator(new IntegerRangeValidator("Please enter a valid number", 0, Integer.MAX_VALUE));
@@ -41,7 +42,7 @@ public enum DisplayFieldType
     TEXT_AREA
             {
                 @Override
-                public Component component(String name, String caption)
+                public Field field(String name, String caption)
                 {
                     return new TextArea(caption);
                 }
@@ -49,13 +50,13 @@ public enum DisplayFieldType
     EMAIL
             {
                 @Override
-                public Component component(String name, String caption)
+                public Field field(String name, String caption)
                 {
-                    final TextField field = new TextField();
+                    final TextField field = new TextField(caption);
                     field.addValidator(new EmailValidator("Please enter a valid email address"));
                     return field;
                 }
             };
 
-    public abstract Component component(String name, String caption);
+    public abstract Field field(String name, String caption);
 }

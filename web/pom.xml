@@ -88,6 +88,12 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.vaadin.polymer</groupId>
+            <artifactId>vaadin-gwt-polymer-elements</artifactId>
+            <version>1.2.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
